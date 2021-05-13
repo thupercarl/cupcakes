@@ -1,6 +1,6 @@
 <?php
 
-//This is my controller for the diner project
+//This is my controller for the cupcakes project
 
 //Turn on error-reporting
 ini_set('display_errors', 1);
@@ -18,23 +18,38 @@ require_once ('model/validation.php');
 $f3 = Base::instance();
 
 //Define default route
-$f3->route('GET /', function(){
+$f3->route('GET /', function($f3){
 
     //Initialize variables for user input
     $userFlavors = array();
+    $userName = array();
 
     //If the form has been submitted, validate the data
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //var_dump($_POST);
 
-        //If condiments are selected
+        //If flavors are selected
+        if (!empty($_POST['name'])) {
+
+            //Get user input
+            $userName = $_POST['name'];
+
+            //If flavors are valid
+            if (validName($userName)) {
+                $_SESSION['name'] = implode(", ", $userName);
+            } else {
+                $f3->set('errors["name"]', 'Invalid selection');
+            }
+        }
+
+        //If flavors are selected
         if (!empty($_POST['flavors'])) {
 
             //Get user input
             $userFlavors = $_POST['flavors'];
 
-            //If condiments are valid
-            if (validFlavors($userFlavors)) {
+            //If flavors are valid
+            if (validChoice($userFlavors)) {
                 $_SESSION['flavors'] = implode(", ", $userFlavors);
             } else {
                 $f3->set('errors["flavors"]', 'Invalid selection');
@@ -47,6 +62,15 @@ $f3->route('GET /', function(){
         }
     }
 
+    //Get the flavors from the Model and send them to the View
+    $f3->set('flavors', getFlavors());
+
+    //Add the user data to the hive
+    $f3->set('flavors', $userFlavors);
+
+    //Display the second order form
+    $view = new Template();
+    echo $view->render('views/home.html');
 });
 
 //Run Fat-Free
