@@ -1,7 +1,7 @@
 <?php
 
 /* data-layer.php
- *Return data for the diner app
+ *Return data for the cupcakes app
  *
  */
 
