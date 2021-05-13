@@ -18,11 +18,13 @@ require_once ('model/validation.php');
 $f3 = Base::instance();
 
 //Define default route
-$f3->route('GET /', function($f3){
+$f3->route('GET|POST /', function($f3){
+
+    //Reinitialize session array
+    $_SESSION = array();
 
     //Initialize variables for user input
     $userFlavors = array();
-    $userName = array();
 
     //If the form has been submitted, validate the data
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -34,9 +36,9 @@ $f3->route('GET /', function($f3){
             //Get user input
             $userName = $_POST['name'];
 
-            //If flavors are valid
-            if (validName($userName)) {
-                $_SESSION['name'] = implode(", ", $userName);
+            //If name is valid
+            if(validName($userName)) {
+                $_SESSION['name'] = $userName;
             } else {
                 $f3->set('errors["name"]', 'Invalid selection');
             }
@@ -56,6 +58,10 @@ $f3->route('GET /', function($f3){
             }
         }
 
+        //calc total
+        $total = count($userFlavors) * 3.50;
+        $_SESSION['total'] = $total;
+
         //If the error array is empty, redirect to summary page
         if (empty($f3->get('errors'))) {
             header('location: summary');
@@ -71,6 +77,13 @@ $f3->route('GET /', function($f3){
     //Display the second order form
     $view = new Template();
     echo $view->render('views/home.html');
+});
+
+$f3->route('GET /summary', function(){
+
+    //Display the summary page
+    $view = new Template();
+    echo $view->render('views/summary.html');
 });
 
 //Run Fat-Free
