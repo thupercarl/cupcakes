@@ -8,11 +8,21 @@
 //Return true if name is valid
 function validName($name)
 {
-    return strLen(trim($name)) > 0;
+    return strLen(trim($name)) >= 2;
 }
 
-//Return true if at least one checkbox is selected
+//Return true if *all* choices are valid
 function validChoice($choices)
 {
-    return count($choices) > 0;
+    $validChoices = getFlavors();
+
+    //Make sure each selected choice is valid
+    foreach ($choices as $userChoice) {
+        if (!in_array($userChoice, $validChoices)) {
+            return false;
+        }
+    }
+
+    //All choices are valid
+    return true;
 }

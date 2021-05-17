@@ -24,24 +24,22 @@ $f3->route('GET|POST /', function($f3){
     $_SESSION = array();
 
     //Initialize variables for user input
+    $userName = "";
     $userFlavors = array();
 
     //If the form has been submitted, validate the data
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         //var_dump($_POST);
 
-        //If flavors are selected
-        if (!empty($_POST['name'])) {
+        $userName = $_POST['name'];
 
-            //Get user input
-            $userName = $_POST['name'];
-
-            //If name is valid
-            if(validName($userName)) {
-                $_SESSION['name'] = $userName;
-            } else {
-                $f3->set('errors["name"]', 'Invalid selection');
-            }
+        //If name is valid, store data
+        if(validName($_POST['name'])) {
+            $_SESSION['name'] = $userName;
+        }
+        //Otherwise, set an error variable in the hive
+        else {
+            $f3->set('errors["name"]', 'Please enter a name');
         }
 
         //If flavors are selected
@@ -53,9 +51,13 @@ $f3->route('GET|POST /', function($f3){
             //If flavors are valid
             if (validChoice($userFlavors)) {
                 $_SESSION['flavors'] = implode(", ", $userFlavors);
-            } else {
+            }
+            else {
                 $f3->set('errors["flavors"]', 'Invalid selection');
             }
+        }
+        else {
+            $f3->set('errors["flavors"]', 'Invalid selection');
         }
 
         //calc total
