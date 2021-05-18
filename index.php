@@ -50,7 +50,8 @@ $f3->route('GET|POST /', function($f3){
 
             //If flavors are valid
             if (validChoice($userFlavors)) {
-                $_SESSION['flavors'] = implode(", ", $userFlavors);
+                $_SESSION['flavors'] = $userFlavors;
+                //$_SESSION['flavors'] = implode(", ", $userFlavors);
             }
             else {
                 $f3->set('errors["flavors"]', 'Invalid selection');
